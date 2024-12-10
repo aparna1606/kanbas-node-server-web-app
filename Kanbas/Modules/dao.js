@@ -1,24 +1,21 @@
 import Database from "../Database/index.js";
+import model from "./model.js";
+import courseModel from "../Courses/model.js";
 
-export function updateModule(moduleId, moduleUpdates) {
-    const { modules } = Database;
-    const module = modules.find((module) => module._id === moduleId);
-    Object.assign(module, moduleUpdates);
-    return module;
-  }
-  
-export function deleteModule(moduleId) {
-    const { modules } = Database;
-    Database.modules = modules.filter((module) => module._id !== moduleId);
-   }
-   
+export async function findModulesForCourse(courseId) {
+  // const course = await courseModel.findOne({ _id: courseId });
+  // console.log(`debugging - ${course}`);
+  return await model.find({ course: courseId });
+}
 export function createModule(module) {
-    const newModule = { ...module, _id: Date.now().toString() };
-    Database.modules = [...Database.modules, newModule];
-    return newModule;
-  }
-  
-export function findModulesForCourse(courseId) {
-  const { modules } = Database;
-  return modules.filter((module) => module.course === courseId);
+  delete module._id;
+  console.log(`new module is - ${module}`);
+  return model.create(module);
+}
+export function deleteModule(moduleId) {
+  return model.deleteOne({ _id: moduleId });
+}
+export function updateModule(moduleId, moduleUpdates) {
+  console.log(`updated module is - ${moduleUpdates}`);
+  return model.updateOne({ _id: moduleId }, moduleUpdates);
 }
